@@ -1,0 +1,428 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALN - Advanced Luminas News</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #4f46e5;
+      --color-secondary: #f43f5e;
+    }
+    body {
+      font-family: 'Pretendard', sans-serif;
+      scroll-behavior: smooth;
+      word-break: keep-all;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #f43f5e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      will-change: transform;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.3);
+    }
+    .btn-secondary {
+      background: linear-gradient(135deg, #e11d48, #fb7185);
+      box-shadow: 0 4px 14px 0 rgba(225, 29, 72, 0.3);
+    }
+    .news-card {
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease, box-shadow 0.3s ease;
+      will-change: transform, box-shadow;
+      transform: translateZ(0); /* Hardware acceleration */
+    }
+    .news-card:hover {
+      transform: translateY(-6px) translateZ(0);
+      border-color: rgba(99, 102, 241, 0.5);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2);
+    }
+    .glass-effect {
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .tab-inactive {
+      color: #64748b;
+    }
+    .dark .tab-inactive {
+      color: #94a3b8;
+    }
+    /* Faster transitions for UI elements */
+    button, input, textarea, .transition-all {
+      transition-duration: 150ms !important;
+    }
+    /* Modal entry animation optimization */
+    .modal-enter {
+      animation: modalFadeIn 0.2s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body class="bg-white dark:bg-[#050505] text-slate-900 dark:text-slate-100 selection:bg-indigo-500/30">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 glass-effect bg-white/80 dark:bg-black/80 border-b border-slate-200 dark:border-white/10">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+      <div class="flex items-center gap-3 group cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <div class="w-10 h-10 sm:w-12 sm:h-12 btn-primary rounded-2xl flex items-center justify-center group-hover:rotate-6 transition-transform">
+          <span class="text-white font-black text-xl sm:text-2xl italic">A</span>
+        </div>
+        <span class="text-2xl sm:text-3xl font-black tracking-tighter">ALN</span>
+      </div>
+      <div id="nav-user-area" class="flex items-center gap-3 sm:gap-6">
+        <!-- Auth Area Injected by JS -->
+      </div>
+    </div>
+  </nav>
+
+  <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20 max-w-7xl">
+    <!-- Header Section -->
+    <header class="mb-16 sm:mb-28 text-center">
+      <h1 class="text-5xl sm:text-7xl lg:text-9xl font-black mb-6 sm:mb-10 italic text-gradient tracking-tighter leading-[0.9] sm:leading-none">
+        ALL LUMINAS<br class="hidden sm:block"> NEWS
+      </h1>
+      <p class="text-slate-600 dark:text-slate-400 font-bold text-lg sm:text-2xl lg:text-3xl max-w-3xl mx-auto leading-tight">
+        선명하게 마주하는 루미나즈의 진실.
+      </p>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="flex justify-center mb-12 sm:mb-20">
+      <div class="inline-flex p-1.5 sm:p-2 rounded-[2rem] sm:rounded-[3rem] border-2 border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-white/5 shadow-inner">
+        <button id="tab-recommended" onclick="switchTab('recommended')" 
+          class="px-6 sm:px-14 py-3 sm:py-5 rounded-[1.6rem] sm:rounded-[2.5rem] font-black transition-all text-base sm:text-xl btn-primary text-white shadow-xl scale-105">
+          추천 뉴스
+        </button>
+        <button id="tab-latest" onclick="switchTab('latest')" 
+          class="px-6 sm:px-14 py-3 sm:py-5 rounded-[1.6rem] sm:rounded-[2.5rem] font-black transition-all text-base sm:text-xl tab-inactive hover:text-indigo-500 dark:hover:text-indigo-400">
+          최신 뉴스
+        </button>
+      </div>
+    </div>
+
+    <!-- News List -->
+    <div id="news-container" class="grid grid-cols-1 gap-12 sm:gap-20">
+      <!-- Injected via JavaScript -->
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-24 sm:mt-40 py-20 sm:py-32 border-t border-slate-100 dark:border-white/5 bg-slate-50/30 dark:bg-white/[0.02]">
+    <div class="container mx-auto px-6 text-center">
+      <div class="flex flex-col items-center gap-6">
+        <div class="w-12 h-12 btn-primary rounded-2xl flex items-center justify-center opacity-50">
+          <span class="text-white font-black text-2xl italic">A</span>
+        </div>
+        <p class="text-slate-400 font-black text-sm sm:text-lg italic tracking-[0.2em] uppercase">
+          ALN Media Group &copy; 2024
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modals -->
+  <div id="login-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 sm:p-6">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="toggleModal('login-modal', false)"></div>
+    <div class="relative bg-white dark:bg-[#0c0c0c] w-full max-w-md rounded-[2.5rem] sm:rounded-[3.5rem] shadow-2xl border border-slate-200 dark:border-white/10 overflow-hidden modal-enter">
+      <div class="h-1.5 btn-primary"></div>
+      <div class="p-8 sm:p-12">
+        <div class="flex justify-between items-center mb-8">
+          <h2 class="text-3xl sm:text-4xl font-black tracking-tight italic">Admin Login</h2>
+          <button onclick="toggleModal('login-modal', false)" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-white/5 hover:bg-rose-500 hover:text-white transition-all">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <form onsubmit="handleLogin(event)" class="space-y-5">
+          <div class="space-y-1.5">
+            <label class="block text-[10px] font-black uppercase tracking-widest px-1 opacity-40">Identity ID</label>
+            <input id="login-id" type="text" required class="w-full bg-slate-50 dark:bg-white/5 border-2 border-transparent focus:border-indigo-500 rounded-2xl p-4 sm:p-5 outline-none font-black text-lg" placeholder="아이디를 입력하세요">
+          </div>
+          <div class="space-y-1.5">
+            <label class="block text-[10px] font-black uppercase tracking-widest px-1 opacity-40">Passcode</label>
+            <input id="login-pw" type="password" required class="w-full bg-slate-50 dark:bg-white/5 border-2 border-transparent focus:border-indigo-500 rounded-2xl p-4 sm:p-5 outline-none font-black text-lg" placeholder="비밀번호를 입력하세요">
+          </div>
+          <p id="login-error" class="hidden text-rose-500 text-sm font-black px-1">인증 정보가 올바르지 않습니다.</p>
+          <button type="submit" class="w-full btn-primary text-white font-black py-4 sm:py-5 rounded-2xl sm:rounded-3xl shadow-lg hover:brightness-110 active:scale-[0.98] text-lg sm:text-xl tracking-tight transition-all">
+            LOG IN
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="logout-modal" class="fixed inset-0 z-[70] hidden flex items-center justify-center p-6">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="toggleModal('logout-modal', false)"></div>
+    <div class="relative bg-white dark:bg-[#0c0c0c] w-full max-w-xs rounded-[2.5rem] shadow-2xl p-10 text-center border border-slate-200 dark:border-white/10 modal-enter">
+      <h3 class="text-2xl font-black mb-8 leading-tight">로그아웃 하시겠습니까?</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <button onclick="toggleModal('logout-modal', false)" class="py-4 rounded-2xl border-2 border-slate-100 dark:border-white/10 font-black hover:bg-slate-50 dark:hover:bg-white/5 transition-all">취소</button>
+        <button onclick="confirmLogout()" class="py-4 rounded-2xl btn-primary text-white font-black shadow-md transition-all">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Data ---
+    const newsData = [
+      {
+        id: '1',
+        category: 'recommended',
+        title: '루미나즈 B급 게이트 처리, 피해자는 2명으로...',
+        summary: '오늘 오전 발생한 서울 중심부 B급 게이트가 나타났지만, 루미나즈들이 빠른 대처로 큰 인명피해 없이 부상자 2명으로 끝났습니다.',
+        content: '현장 증언에 따르면 게이트 붕괴 직전 루미나즈 대원들의 대응이 늦어지며 인근 상가에 있던 시민 2명이 경상을 입은 것으로 확인되었습니다.',
+        imageUrl: 'https://igx.kr/u/wC/c/c',
+        date: '2024-05-20',
+        comments: [
+          { id: 'c1', author: '익명3', date: '2024-05-20', time: '14:20', content: 'ㄴㅇㅅ', isDeleted: false },
+          { id: 'c2', author: '익명4', date: '2024-05-20', time: '14:22', content: '지리네ㅋ', isDeleted: false },
+          { id: 'd1', author: '익명6', date: '2024-05-20', time: '14:25', content: '운영정책 위반으로 삭제되었습니다.', isDeleted: true, originalContent: '저 녀석들 아직도 활동중임?' },
+          { id: 'd2', author: '익명16', date: '2024-05-20', time: '14:30', content: '운영정책 위반으로 삭제되었습니다.', isDeleted: true, originalContent: '사람 2명도 보호 못하냐ㅉㅉ' },
+          { id: 'd3', author: '익명20', date: '2024-05-20', time: '14:35', content: '운영정책 위반으로 삭제되었습니다.', isDeleted: true, originalContent: '나 이쯤되면 괴물은 저 루미나즈 애들 같음' }
+        ]
+      },
+      {
+        id: '2',
+        category: 'recommended',
+        title: '루미나즈 한명 게이트에서 싸우다가 부상...',
+        summary: '루미나즈 정다혜 대원이 전투 도중 중상을 입어 멤버들에 의해 이송되었습니다.',
+        content: '게이트에서 나온 몬스터와 교전 중 동료를 구하려다 공격을 받아 큰 부상을 입었습니다. 당시 지원 인력이 부족하여 피해가 컸던 것으로 보입니다.',
+        imageUrl: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=800&auto=format&fit=crop',
+        date: '2024-05-19',
+        comments: [
+          { id: 'c3', author: '익명5', date: '2024-05-19', time: '20:10', content: '빨리 쾌차하세요!', isDeleted: false },
+          { id: 'd4', author: '익명7', date: '2024-05-19', time: '20:15', content: '운영정책 위반으로 삭제되었습니다.', isDeleted: true, originalContent: '다쳐도 알빠임? 우리 살려주기나 해라ㅋ' }
+        ]
+      },
+      {
+        id: '3',
+        category: 'latest',
+        title: '게이트 S급 출몰 가능성이 43%로...',
+        summary: '전문가들의 분석 결과, 다음 주 서울 중심부에서 S급 게이트가 열릴 확률이 급증했습니다.',
+        content: '정부는 비상대응 단계를 격상하고 전 국민 대피 요령을 재점검하고 있습니다.',
+        imageUrl: 'https://images.unsplash.com/photo-1501854140801-50d01674aa3e?q=80&w=800&auto=format&fit=crop',
+        date: '2024-05-21',
+        comments: [
+          { id: 'c4', author: '익명1', date: '2024-05-21', time: '09:05', content: '진짜 무섭네요ㅠㅠ', isDeleted: false },
+          { id: 'd5', author: '익명9', date: '2024-05-21', time: '09:10', content: '운영정책 위반으로 삭제되었습니다.', isDeleted: true, originalContent: '루미나즈 애들이 막아주겠지 고기 방패들ㅋ' },
+          { id: 'd6', author: '익명2', date: '2024-05-21', time: '09:15', content: '운영정책 위반으로 삭제되었습니다.', isDeleted: true, originalContent: '초원자보단 괴물ㅋ' },
+          { id: 'd7', author: '익명10', date: '2024-05-21', time: '09:20', content: '운영정책 위반으로 삭제되었습니다.', isDeleted: true, originalContent: '루미나즈들 능력 쓰다가 우리 다치면 지들 책임임~' }
+        ]
+      },
+      {
+        id: '4',
+        category: 'latest',
+        title: '초원자들의 힘, 안전할까?...',
+        summary: '초원자들이 가지고 있는 힘의 위력과 그 통제에 대한 시민들의 공포심이 커지고 있습니다.',
+        content: '최근 여론 조사에 따르면 응답자의 절반 이상이 초원자들의 힘을 더 엄격히 통제해야 한다고 답했습니다.',
+        imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop',
+        date: '2024-05-21',
+        comments: [
+          { id: 'd8', author: '익명8', date: '2024-05-21', time: '10:05', content: '운영정책 위반으로 삭제되었습니다.', isDeleted: true, originalContent: '추천 뉴스 보니까 부상자 2명이라던데 루미나즈 똑바로 하긴 함?' },
+          { id: 'd9', author: '익명12', date: '2024-05-21', time: '10:10', content: '운영정책 위반으로 삭제되었습니다.', isDeleted: true, originalContent: '다치거나 죽거나 상관없음 우리 지키기나 해ㅋ' },
+          { id: 'c5', author: '익명13', date: '2024-05-21', time: '10:15', content: '와, 지리네ㅋㅋ', isDeleted: false }
+        ]
+      }
+    ];
+
+    // --- State ---
+    let currentUser = { id: '', isLoggedIn: false };
+    let currentTab = 'recommended';
+
+    // --- Functions ---
+    function init() {
+      renderNav();
+      renderNews();
+    }
+
+    function toggleModal(id, show) {
+      const modal = document.getElementById(id);
+      if (show) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      } else {
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+      }
+    }
+
+    function switchTab(tab) {
+      if (currentTab === tab) return;
+      currentTab = tab;
+      const recBtn = document.getElementById('tab-recommended');
+      const latBtn = document.getElementById('tab-latest');
+      
+      const activeClass = "px-6 sm:px-14 py-3 sm:py-5 rounded-[1.6rem] sm:rounded-[2.5rem] font-black transition-all text-base sm:text-xl text-white shadow-xl scale-105";
+      const inactiveClass = "px-6 sm:px-14 py-3 sm:py-5 rounded-[1.6rem] sm:rounded-[2.5rem] font-black transition-all text-base sm:text-xl tab-inactive hover:text-opacity-80";
+
+      if (tab === 'recommended') {
+        recBtn.className = `${activeClass} btn-primary`;
+        latBtn.className = inactiveClass;
+      } else {
+        latBtn.className = `${activeClass} btn-secondary`;
+        recBtn.className = inactiveClass;
+      }
+      renderNews();
+    }
+
+    function renderNav() {
+      const area = document.getElementById('nav-user-area');
+      if (currentUser.isLoggedIn) {
+        area.innerHTML = `
+          <div class="flex items-center gap-3 sm:gap-4 animate-in fade-in duration-200">
+            <span class="hidden md:block font-black text-xs sm:text-sm bg-indigo-500/10 text-indigo-500 px-4 py-2 rounded-full border border-indigo-500/20 uppercase tracking-tighter">AGENT ${currentUser.id}</span>
+            <button onclick="toggleModal('logout-modal', true)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-slate-200 dark:border-white/10 flex items-center justify-center hover:bg-rose-500 hover:border-rose-500 hover:text-white transition-all">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd" /></svg>
+            </button>
+          </div>
+        `;
+      } else {
+        area.innerHTML = `
+          <button onclick="toggleModal('login-modal', true)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-slate-200 dark:border-white/10 flex items-center justify-center hover:border-indigo-500 hover:text-indigo-500 transition-all">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          </button>
+        `;
+      }
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const idInput = document.getElementById('login-id');
+      const pwInput = document.getElementById('login-pw');
+      const errorMsg = document.getElementById('login-error');
+
+      if (idInput.value === 'LAO1007' && pwInput.value === 'YJT256') {
+        currentUser = { id: idInput.value, isLoggedIn: true };
+        toggleModal('login-modal', false);
+        renderNav();
+        renderNews();
+        idInput.value = '';
+        pwInput.value = '';
+        errorMsg.classList.add('hidden');
+      } else {
+        errorMsg.classList.remove('hidden');
+      }
+    }
+
+    function confirmLogout() {
+      currentUser = { id: '', isLoggedIn: false };
+      toggleModal('logout-modal', false);
+      renderNav();
+      renderNews();
+    }
+
+    function renderNews() {
+      const container = document.getElementById('news-container');
+      const filtered = newsData.filter(n => n.category === currentTab);
+      
+      // Virtual DOM fragment would be better, but innerHTML is fast enough for small sets.
+      container.innerHTML = filtered.map(article => `
+        <article class="news-card group bg-transparent rounded-[2rem] sm:rounded-[3.5rem] overflow-hidden border-2 border-slate-100 dark:border-white/5 bg-slate-50/10 dark:bg-white/[0.01]">
+          <div class="flex flex-col lg:flex-row">
+            <!-- Image Area -->
+            <div class="lg:w-[40%] relative overflow-hidden h-[280px] sm:h-[400px] lg:h-auto">
+              <img src="${article.imageUrl}" alt="${article.title}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+              <div class="absolute top-6 left-6 sm:top-8 sm:left-8 flex flex-col gap-2">
+                <span class="px-5 py-2 rounded-full text-[10px] sm:text-xs font-black text-white shadow-lg glass-effect border border-white/20 uppercase tracking-[0.15em]">
+                  Priority Access
+                </span>
+                <span class="px-5 py-2 rounded-full text-[9px] sm:text-[11px] font-black text-white ${article.category === 'recommended' ? 'bg-indigo-600' : 'bg-rose-600'} border border-white/10 w-fit">
+                  ${article.category === 'recommended' ? "ALN PICK" : 'HOT UPDATE'}
+                </span>
+              </div>
+            </div>
+            <!-- Content Area -->
+            <div class="lg:w-[60%] p-8 sm:p-12 lg:p-14 flex flex-col">
+              <div class="flex flex-wrap items-center gap-3 mb-5 sm:mb-6 text-[10px] sm:text-xs font-black tracking-[0.2em] uppercase opacity-40">
+                <span class="text-indigo-500">Official Report</span>
+                <span class="w-1 h-1 rounded-full bg-slate-300 dark:bg-white/20"></span>
+                <time class="dark:text-white">${article.date}</time>
+              </div>
+              <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black mb-6 leading-[1.15] tracking-tight group-hover:text-indigo-500 transition-colors">
+                ${article.title}
+              </h2>
+              <p class="mb-8 sm:mb-10 leading-relaxed flex-grow font-black text-base sm:text-xl text-slate-500 dark:text-slate-400">
+                ${article.summary}
+              </p>
+              <div class="flex items-center justify-between mt-auto pt-8 border-t border-slate-100 dark:border-white/5">
+                <button onclick="toggleComments('${article.id}')" class="flex items-center gap-3 px-6 py-3.5 rounded-2xl border-2 border-slate-100 dark:border-white/5 hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all font-black text-xs sm:text-sm">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>
+                  <span>Discussion (${article.comments.length})</span>
+                </button>
+                <button class="font-black hover:text-indigo-500 transition-all text-[10px] sm:text-xs uppercase tracking-[0.2em] italic">
+                  Launch Insight &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Comments Area -->
+          <div id="comments-${article.id}" class="hidden p-8 sm:p-14 border-t border-slate-100 dark:border-white/5 bg-slate-50/30 dark:bg-white/[0.01] animate-in slide-in-from-top-4 duration-200">
+            <div class="max-w-4xl mx-auto">
+              <h3 class="text-xl sm:text-2xl font-black mb-8 sm:mb-10 flex items-center gap-4">
+                <span class="w-1.5 h-7 btn-primary rounded-full"></span>
+                Public Reaction
+              </h3>
+              <div class="space-y-5 sm:space-y-6">
+                ${article.comments.map(c => `
+                  <div class="flex gap-4 sm:gap-5 p-5 sm:p-7 rounded-[1.5rem] sm:rounded-[2rem] border ${c.isDeleted && !currentUser.isLoggedIn ? 'bg-rose-500/5 border-rose-500/10' : 'bg-white dark:bg-white/5 border-slate-100 dark:border-white/5 shadow-sm'} transition-all hover:scale-[1.01]">
+                    <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl border border-slate-100 dark:border-white/10 flex-shrink-0 flex items-center justify-center font-black bg-slate-50 dark:bg-white/5">
+                      <svg class="w-6 h-6 opacity-20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>
+                    </div>
+                    <div class="flex-grow">
+                      <div class="flex items-center gap-3 mb-2">
+                        <span class="font-black text-xs sm:text-base">${c.author}</span>
+                        <span class="text-[9px] sm:text-[11px] font-black opacity-30 uppercase tracking-widest">${c.date} • ${c.time}</span>
+                        ${c.isDeleted && currentUser.isLoggedIn ? '<span class="text-[8px] sm:text-[9px] px-2 py-0.5 rounded bg-rose-600 text-white font-black tracking-widest">RESTRICTED</span>' : ''}
+                      </div>
+                      <div class="text-sm sm:text-lg font-black leading-snug ${c.isDeleted ? 'text-rose-500 italic opacity-80' : 'text-slate-600 dark:text-slate-300'}">
+                        ${c.isDeleted ? (currentUser.isLoggedIn ? c.originalContent : '운영정책 위반으로 삭제되었습니다.') : c.content}
+                      </div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+              <!-- Comment Input -->
+              <div class="mt-10 sm:mt-12 relative">
+                <textarea placeholder="공정한 시선으로 의견을 남겨주세요..." class="w-full bg-slate-100/50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/5 rounded-[1.5rem] sm:rounded-[2.5rem] p-5 sm:p-8 pr-16 sm:pr-20 focus:border-indigo-500 focus:bg-white dark:focus:bg-black outline-none min-h-[100px] sm:min-h-[140px] resize-none font-black text-sm sm:text-lg transition-all"></textarea>
+                <button class="absolute bottom-5 right-5 sm:bottom-7 sm:right-7 btn-primary text-white w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl shadow-xl flex items-center justify-center transition-all hover:scale-110 active:scale-90">
+                  <svg class="w-5 h-5 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function toggleComments(id) {
+      const el = document.getElementById(`comments-${id}`);
+      const isHidden = el.classList.contains('hidden');
+      
+      // Toggle visibility
+      el.classList.toggle('hidden');
+      
+      if (isHidden) {
+        // Smooth scroll to comments with offset
+        const navHeight = 80;
+        const rect = el.getBoundingClientRect();
+        const top = rect.top + window.pageYOffset - navHeight - 100;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    }
+
+    // Run
+    init();
+  </script>
+</body>
+</html>
